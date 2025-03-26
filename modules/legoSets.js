@@ -1,14 +1,17 @@
 class LegoData {
     sets;
+    themes;
 
     constructor() {
         this.sets = [];
+        this.themes = [];
     }
 
     initialize() {
 
         const setData = require("../data/setData");
         const themeData = require("../data/themeData");
+        this.themes = [...themeData]
 
         return new Promise((resolve, reject) => {
             setData.forEach(setElement => {
@@ -27,6 +30,12 @@ class LegoData {
         });
     }
 
+    getAllThemes() {
+        return new Promise((resolve, reject) => {
+            resolve(this.themes)
+        })
+    }
+
     getSetByNum(setNum) {
 
         return new Promise((resolve, reject) => {
@@ -40,6 +49,31 @@ class LegoData {
 
         });
 
+    }
+
+    deleteSetByNum(setNum) {
+        return new Promise((resolve, reject) => {
+            let foundSetIndex = this.sets.findIndex(s => s.set_num == setNum)
+
+            if(foundSetIndex != -1){
+                this.sets.splice(foundSetIndex,1)
+                resolve()
+            } else if (foundSetIndex == -1){
+                reject("unable to find out the theme")
+            }
+        })
+    }
+
+    getThemeById(id) {
+        return new Promise((resolve, reject) => {
+            let foundTheme = this.themes.find(t => t.id == id);
+
+            if(foundTheme) {
+                resolve(foundTheme)
+            } else {
+                reject("unable to find requested theme.")
+            }
+        })
     }
 
     addSet(newSet) {
