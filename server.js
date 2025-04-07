@@ -1,12 +1,12 @@
 /********************************************************************************
-* WEB700 – Assignment 04
+* WEB700 – Assignment 05
 *
 * I declare that this assignment is my own work in accordance with Seneca's
 * Academic Integrity Policy:
 *
 * https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
 *
-* Name: Bhargav Rasesh Patel Student ID: 116520248 Date: March 06, 2025
+* Name: Bhargav Rasesh Patel Student ID: 116520248 Date: March 25, 2025
 *
 * Published URL: https://web-700-a3-osl2a1cv9-bhargav-patels-projects-1628d3a0.vercel.app/
 *
@@ -23,8 +23,8 @@ const HTTP_PORT = process.env.PORT || 8080;
 // app.use(express.static('public'));
 app.use(express.static(__dirname + '/public'));
 // express.urlencoded({ extended: true })
-app.use(express.urlencoded({ extended: true })); // ✅ Parses form data
-app.use(express.json()); // ✅ Parses JSON data (if needed)
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
 app.set('view engine', 'ejs');
@@ -40,13 +40,14 @@ app.get("/about", (req, res) => {
 
 app.get("/lego/addSet", async (req, res) => {
   let getAllThemes = await legoData.getAllThemes()
+  // console.log("All themes" ,getAllThemes);
   res.render("addSet", { themes: getAllThemes })
 })
 
 app.post("/lego/addSet", async (req, res) => {
   try {
-    let foundTheme = await legoData.getThemeById(req.body.theme_id);
-    req.body.theme = foundTheme.name;
+    // let foundTheme = await legoData.getThemeById(req.body.theme_id);
+    // req.body.theme = foundTheme.name;
 
     await legoData.addSet(req.body); 
     res.redirect('/lego/sets');
@@ -60,11 +61,12 @@ app.get("/lego/sets", async (req, res) => {
   try {
     if (req.query.theme) {
       let legoSets = await legoData.getSetsByTheme(req.query.theme);
-      console.log(legoSets)
+      // console.log(legoSets)
       res.render("sets", { sets: legoSets });
 
     } else {
       let legoSets = await legoData.getAllSets();
+      // console.log(legoSets)
       res.render("sets", { sets: legoSets });
     }
   } catch (err) {
@@ -76,6 +78,7 @@ app.get("/lego/sets", async (req, res) => {
 app.get("/lego/sets/:set_num", async (req, res) => {
   try {
     let legoSet = await legoData.getSetByNum(req.params.set_num);
+    console.log(legoSet)
     res.render("set", { set: legoSet });
   } catch (err) {
     res.status(404).send(err);
@@ -83,12 +86,12 @@ app.get("/lego/sets/:set_num", async (req, res) => {
 });
 
 app.get("/lego/deleteSet/:set_num", async (req, res) => {
-  try {
-    await legoData.deleteSetByNum(req.params.set_num);
-    res.redirect("/lego/sets");
-  } catch (err) {
-    res.status(404).send(err);
-  }
+    // console.log("Deleted successfully", req.params.set_num)
+    legoData.deleteSetByNum(req.params.set_num).then(() => res.redirect("/lego/sets"))
+    .catch((error) => {
+      res.status(404).send(error);
+    });
+    
 });
 
 app.post("/lego/add-test", async (req, res) => {
@@ -110,8 +113,9 @@ app.post("/lego/add-test", async (req, res) => {
   })
 })
 
-app.use((req, res, next) => {
-  res.render("404");
+app.use((err, req, res, next) => {
+  res.render("404", { page: req.path });
+  // res.render("404", { message: err.message || "An error occurred" });
 });
 
 legoData.initialize().then(() => {

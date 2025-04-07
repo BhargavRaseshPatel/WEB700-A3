@@ -24,20 +24,25 @@
                 </section>
 
                 <% sets.forEach( set => { %>
-                    <table class="table">
-                     
-                        <tbody>
-                          <tr>
-                            <td><div class="rounded" style="width: 8rem; height: 8rem; background-image: url(<%=set.img_url%>);
-background-size: cover; background-position: center;"></div></td>
-                            <td><%= set.name %> | <button type="button" class="btn btn-primary"><%= set.theme %></button></td>
-                            <td><b>Year:</b> <%= set.year %> - <b>Parts: </b><%= set.num_parts %></td>
-                            <td><a href="/lego/sets/<%=set.set_num%>"><button type="button" class="btn btn-secondary">Details</button></a></td>
-                          </tr>
-                       
-                        </tbody>
-                      </table>
-                    
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-2">
+                                <div class="rounded" style="width: 8rem; height: 8rem; background-image: url(<%=set.img_url%>); background-size: cover; background-position: center;"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= set.name %></h5>
+                                    <p class="card-text">
+                                        <b>Theme:</b> <%= set.Theme.name %><br>
+                                        <b>Year:</b> <%= set.year %> | <b>Parts:</b> <%= set.num_parts %>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                                <a href="/lego/sets/<%=set.set_num%>" class="btn btn-secondary">Details</a>
+                            </div>
+                        </div>
+                    </div>
                 <% }) %>
                 
 			</main>
