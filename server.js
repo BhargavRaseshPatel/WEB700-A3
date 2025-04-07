@@ -46,12 +46,11 @@ app.get("/lego/addSet", async (req, res) => {
 
 app.post("/lego/addSet", async (req, res) => {
   try {
-    // let foundTheme = await legoData.getThemeById(req.body.theme_id);
-    // req.body.theme = foundTheme.name;
-
+    console.log("Received set data:", req.body);
     await legoData.addSet(req.body); 
     res.redirect('/lego/sets');
   } catch (error) {
+    console.error("Error adding set:", error);
     res.status(400).send("Error adding Lego set: " + error.message);
   }
 });

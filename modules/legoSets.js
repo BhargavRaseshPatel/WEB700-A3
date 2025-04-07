@@ -154,30 +154,26 @@ class LegoData {
 
     addSet(newSet) {
         return new Promise((resolve, reject) => {
-            // let foundSet = this.sets.find(s => s.set_num == newSet.set_num)
-
-            this.Set.findAll({
+            this.Set.findOne({
                 where: {
                     set_num: newSet.set_num
                 }
-            }).then(set => {
-                if (set) {
-                    reject("Set already exists.")
+            }).then(existingSet => {
+                if (existingSet) {
+                    reject("Set already exists.");
                 } else {
                     this.Set.create(newSet)
-                    resolve()
+                        .then(() => {
+                            resolve("Set added successfully");
+                        })
+                        .catch(err => {
+                            reject("Error creating set: " + err);
+                        });
                 }
             }).catch(err => {
-                reject("Error retrieving set: " + err);
+                reject("Error checking for existing set: " + err);
             });
-
-            // if (foundSet) {
-            //     reject("Set already exists.")
-            // } else {
-            //     this.sets.push(newSet)
-            //     resolve()
-            // }
-        })
+        });
     }
 
     getSetsByTheme(theme) {
